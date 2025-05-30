@@ -1,8 +1,9 @@
 // Chargement des lignes de la table crimes_aplatis.csv dans Neo4j
-LOAD CSV
-WITH HEADERS FROM 'crimes_aplatis.csv' AS row
+LOAD CSV //localhost:11001/project-fd1649d5-4e3a-4d85-b3f7-461143dfb0db/crimes_aplatis.csv' AS row
+WITH HEADERS FROM 'http:
+
 WITH
-row.`CDG/CSP` AS equipe,
+row.`CGD/CSP` AS equipe,
 row.Service AS service,
 row.`Titre crime` AS crime,
 row.Département AS departement,
@@ -29,4 +30,4 @@ MERGE (c)-[:A_ÉTÉ_RÉALISÉ]->(a)
 
 // Relation avec propriétés dynamiques + agrégation
 MERGE (s)-[r:TRAITE { annee: annee, departement: departement }]->(c)
- SET r.frequence = coalesce(r.frequence, 0) + total_valeur
+ SET r.frequence = coalesce(r.frequence, 0) + total_valeur;

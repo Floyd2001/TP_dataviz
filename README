@@ -1,6 +1,3 @@
-Voici le **README complet** avec toutes les étapes, y compris la structure à préparer pour `traitements.csv`, que tu pourras remplir plus tard toi-même :
-
----
 
 # 📘 README – Création automatique d’un graphe Neo4j à partir des crimes Police/Gendarmerie
 
@@ -10,102 +7,31 @@ Importer un fichier Excel contenant les enregistrements de crimes/délits par se
 
 ---
 
-## 🛠️ Pipeline d’ingestion
+##  Pipeline d’ingestion
+
+*Cf le fichier [Traitement](/Traitement_fichier.ipynb)*
 
 ### 1. 📥 Lecture et fusion du fichier Excel
 
-* Charger toutes les feuilles de l’Excel (`pandas.ExcelFile`).
-* Extraire pour chaque bloc (par année) :
+* Chargement du fichier
+* Extraction des données et transformation sous ce format 
 
-  * Le **type de service** (Police ou Gendarmerie),
-  * Les **départements (CGD/CSP)** avec dans les propriétés le terme ,
-  * Les **crimes** et sous-catégories en ligne.
-* Normaliser en format long avec colonnes :
+  ``
+"CGD/CSP", "Service", "Titre crime", "Département", "Périmètre", "Année", "Valeur"
 
-  ```
-  Crime | Service | Département | Année | Nombre | Type_Service
-  ```
+  ``
 
 ---
-
 ### 2. 🧼 Nettoyage et transformation
 
-* Supprimer lignes vides, totaux, et noms mal formés.
-* Fusionner les entêtes multi-lignes si nécessaire.
-* Garder uniquement les lignes numériques valides.
-* Agréger les doublons :
+* Gestion des données manquantes en raison des différences entre les données Gendarme et police.
+* Agrégation des doublons 
 
-  ```python
-  df.groupby(['Année', 'Crime', 'Service', 'Département', 'Type_Service'], as_index=False)['Nombre'].sum() ??????
-  ```
-
----
 
 ### 3.  Ingestion Neo4j avec Cypher
 
-#### A. Lancer Neo4j Desktop
+*Cf le fichier [Cypher](/Création_et_chargement.cql)*
 
-Création d une base de données locale 
+##  Réponses aux questions
 
-#### B. Déposer les fichiers CSV dans `/import`
-
-#### C. Création des nœuds
-
-```cypher
-LOAD CSV WITH HEADERS FROM 'file:///Service.csv' AS row
-MERGE (s:Service {nom: row.nom, type: row.type});
-
-LOAD CSV WITH HEADERS FROM 'file:///Crime.csv' AS row
-MERGE (c:Crime {nom: row.nom});
-
-LOAD CSV WITH HEADERS FROM 'file:///Annee.csv' AS row
-MERGE (a:Annee {val: toInteger(row.val)});
-
-LOAD CSV WITH HEADERS FROM 'file:///Departement.csv' AS row
-MERGE (d:Departement {nom: row.nom});
-```
-
-Ou alors en un fichier massif? 
-
-#### D. Création des relations
-
-```cypher
-// PATROUILLE
-LOAD CSV WITH HEADERS FROM 'file:///relations.csv' AS row
-MATCH (s:Service {nom: row.service})
-MATCH (d:Departement {nom: row.departement})
-MERGE (s)-[:PATROUILLE]->(d);
-
-// A_LIEU
-LOAD CSV WITH HEADERS FROM 'file:///relations.csv' AS row
-MATCH (c:Crime {nom: row.crime})
-MATCH (d:Departement {nom: row.departement})
-MERGE (c)-[:A_LIEU]->(d);
-
-// A_ÉTÉ_RÉALISÉ
-LOAD CSV WITH HEADERS FROM 'file:///relations.csv' AS row
-MATCH (c:Crime {nom: row.crime})
-MATCH (a:Annee {val: toInteger(row.annee)})
-MERGE (c)-[r:A_ÉTÉ_RÉALISÉ]->(a)
-SET r.nombre = toInteger(row.nombre);
-```
-// Traite
-LOAD CSV WITH HEADERS FROM 'file:///traitements.csv' AS row
-MATCH (s:Service {nom: row.service})
-MATCH (c:Crime {nom: row.crime})
-MERGE (s)-[r:TRAITE {année: toInteger(row.annee)}]->(c)
-SET r.nombre = toInteger(row.nombre);
-```
-
-
----
-
-## 🧠 Structure finale du graphe
-
-```
-(:Service {type}) --[:PATROUILLE]--> (:Département)
-(:Crime) --[:A_LIEU]--> (:Département)
-(:Service) --[:TRAITE {année, nombre}]--> (:Crime)
-```
-
----
+*Cf le fichier [Réponses](/Reponse.md)*

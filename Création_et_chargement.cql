@@ -1,6 +1,9 @@
-// Chargement des lignes de la table crimes_aplatis.csv dans Neo4j
+// Chargement des lignes des tables dans neo4j avec modification manuel des noms de fichiers
+// afin de s'adapter aux capacités de l'ordinateur. Sinon possibilité d'utiliser le fichier crimes_aplatis contenant
+// l'ensemble du jeu de données.
 LOAD CSV
 WITH HEADERS FROM 'file: ///crimes_2021.csv' AS row
+// L'enregistrement du fichier semble générer un espace au niveau de l'url (entre ':' et '/'), veuillez le retirer si lancement du code.
 // Préparation des champs
 WITH
 row.`CGD/CSP` AS equipe,

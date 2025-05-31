@@ -157,11 +157,12 @@ Les ressources de l'utilisateur sont aussi à prendre en compte. Ici la prise de
 ---
 ## 2-  Démo 
 
- Vidéo de démonstration sur un petit échantillon en raison du manque de puissance de l ordinateur..
+ Vidéo de démonstration sur un petit échantillon en raison du manque de puissance de l ordinateur.
+
 
 ```md
 📹 [Voir la démo vidéo](media/TpDataviz.mp4)
 ```
-
+ _Vidéo au format mp4 téléchargeable._
 
 

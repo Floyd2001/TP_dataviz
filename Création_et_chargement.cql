@@ -1,5 +1,5 @@
 // Chargement des lignes des tables dans neo4j avec modification manuel des noms de fichiers
-// afin de s'adapter aux capacités de l'ordinateur. Sinon possibilité d'utiliser le fichier crimes_aplatis contenant
+// afin de s'adapter aux capacités de l'ordinateur. Sinon possibilité d'utiliser le fichier crimes_all contenant
 // l'ensemble du jeu de données.
 LOAD CSV
 WITH HEADERS FROM 'file: ///crimes_2021.csv' AS row
